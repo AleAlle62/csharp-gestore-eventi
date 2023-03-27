@@ -5,100 +5,81 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Chiedi all'utente di inserire i dati per un nuovo evento
-        Console.WriteLine("Inserisci i dati per un nuovo evento:");
-        Console.Write("Titolo: ");
-        string titolo = Console.ReadLine();
-        Console.Write("Data (formato dd/MM/yyyy): ");
-        string dataStringa = Console.ReadLine();
-        DateTime data;
-        if (!DateTime.TryParseExact(dataStringa, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out data))
-        {
-            Console.WriteLine("Data non valida.");
-            return;
-        }
-        Console.Write("Capienza massima: ");
-        int capienzaMassima;
-        if (!int.TryParse(Console.ReadLine(), out capienzaMassima))
-        {
-            Console.WriteLine("Capienza massima non valida.");
-            return;
-        }
+        Console.Write("Inserisci il titolo del programma di eventi: ");
+        string titoloProgramma = Console.ReadLine();
 
-        // Crea un nuovo evento con i dati inseriti dall'utente
-        Evento evento = new Evento(titolo, data, capienzaMassima);
+        ProgrammaEventi programma = new ProgrammaEventi(titoloProgramma);
 
-        // Chiedi all'utente di effettuare delle prenotazioni
-        while (true)
+        Console.Write("Vuoi creare un nuovo evento? (s/n): ");
+        string rispostaCreazione = Console.ReadLine();
+        if (rispostaCreazione.ToLower() == "s")
         {
-            Console.Write("Vuoi prenotare dei posti? (s/n): ");
-            string risposta = Console.ReadLine();
-            if (risposta.ToLower() == "n")
-                break;
-            Console.Write("Quanti posti vuoi prenotare? ");
-            int postiDaPrenotare;
-            if (!int.TryParse(Console.ReadLine(), out postiDaPrenotare))
+            // Chiedi all'utente di inserire i dati per un nuovo evento
+            Console.WriteLine("Inserisci i dati per un nuovo evento:");
+            Console.Write("Titolo: ");
+            string titolo = Console.ReadLine();
+            Console.Write("Data (formato dd/MM/yyyy): ");
+            string dataStringa = Console.ReadLine();
+            DateTime data;
+            if (!DateTime.TryParseExact(dataStringa, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out data))
             {
-                Console.WriteLine("Numero di posti non valido.");
-                continue;
+                Console.WriteLine("Data non valida.");
+                return;
             }
-            if (evento.PrenotaPosti(postiDaPrenotare))
+            Console.Write("Capienza massima: ");
+            int capienzaMassima;
+            if (!int.TryParse(Console.ReadLine(), out capienzaMassima))
             {
-                Console.WriteLine("Prenotazione effettuata.");
-                Console.WriteLine("");
-                Console.WriteLine("Posti prenotati: " + evento.NumeroPostiPrenotati);
-                Console.WriteLine("");
-                Console.WriteLine("Posti disponibili: " + (evento.capienzaMassima - evento.NumeroPostiPrenotati));
+                Console.WriteLine("Capienza massima non valida.");
+                return;
             }
-            else
-            {
-                Console.WriteLine("Prenotazione non effettuata.");
-            }
+
+            // Crea un nuovo evento con i dati inseriti dall'utente
+            Evento evento = new Evento(titolo, data, capienzaMassima);
+
+            // Aggiungi l'evento al programma di eventi
+            programma.CreaEvento(evento);
         }
 
+        Console.Write("Quanti eventi vuoi aggiungere? ");
+        int numeroEventi = int.Parse(Console.ReadLine());
 
-        // Chiedi all'utente di disdire dei posti
-        while (true)
+        int eventiInseriti = 0;
+        while (eventiInseriti < numeroEventi)
         {
-            Console.Write("Vuoi disdire dei posti? (s/n): ");
-            string risposta = Console.ReadLine();
-            if (risposta.ToLower() == "n")
-                break;
-            Console.Write("Quanti posti vuoi disdire? ");
-            int postiDaDisdire;
-            if (!int.TryParse(Console.ReadLine(), out postiDaDisdire))
+            Console.WriteLine("Inserimento evento " + (eventiInseriti + 1));
+            Console.Write("Titolo: ");
+            string titoloEvento = Console.ReadLine();
+            Console.Write("Data (formato dd/MM/yyyy): ");
+            DateTime dataEvento = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+            Console.Write("Capienza massima: ");
+            int capienzaMassima = int.Parse(Console.ReadLine());
+
+            try
             {
-                Console.WriteLine("Numero di posti non valido.");
-                continue;
+                Evento evento = new Evento(titoloEvento, dataEvento, capienzaMassima);
+                programma.CreaEvento(evento);
+                Console.WriteLine("Evento aggiunto correttamente");
+                eventiInseriti++;
             }
-            if (evento.DisdiciPosti(postiDaDisdire))
+            catch (Exception ex)
             {
-                Console.WriteLine("Disdetta effettuata.");
-                Console.WriteLine("Posti prenotati: " + evento.NumeroPostiPrenotati);
-                Console.WriteLine("Posti disponibili: " + (evento.capienzaMassima - evento.NumeroPostiPrenotati));
-            }
-            else
-            {
-                Console.WriteLine("Disdetta non effettuata.");
+                Console.WriteLine("Errore: " + ex.Message);
             }
         }
 
+        Console.WriteLine("Numero di eventi presenti nel programma: " + programma.NumeroEventi());
+        Console.WriteLine("Lista di eventi inseriti nel programma:");
+        Console.WriteLine(ProgrammaEventi.StampaEventi(programma.Eventi));
 
-        //stampa dei dati inseriti
-        Console.WriteLine("");
-        Console.WriteLine("Titolo:" + evento.Titolo);
-       
-        Console.WriteLine("");
-        Console.WriteLine("Data:" + evento.Data.ToString("dd/MM/yyyy"));
+        Console.Write("Inserisci una data (formato dd/MM/yyyy): ");
+        DateTime dataCercata = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+        Console.WriteLine("Eventi in data " + dataCercata.ToString("dd/MM/yyyy") + ":");
+        Console.WriteLine(ProgrammaEventi.StampaEventi(programma.EventiInData(dataCercata)));
 
-        Console.WriteLine("");
-        Console.WriteLine("Capienza massima:" + evento.capienzaMassima);
-
-        Console.WriteLine("");
-        Console.WriteLine("POsti prenotati:" + evento.NumeroPostiPrenotati);
+        programma.SvuotaEventi();
+        Console.WriteLine("Tutti gli eventi sono stati eliminati dal programma");
 
         Console.ReadLine();
     }
 }
-
-
