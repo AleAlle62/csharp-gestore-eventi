@@ -45,7 +45,9 @@ class Program
             if (evento.PrenotaPosti(postiDaPrenotare))
             {
                 Console.WriteLine("Prenotazione effettuata.");
+                Console.WriteLine("");
                 Console.WriteLine("Posti prenotati: " + evento.NumeroPostiPrenotati);
+                Console.WriteLine("");
                 Console.WriteLine("Posti disponibili: " + (evento.capienzaMassima - evento.NumeroPostiPrenotati));
             }
             else

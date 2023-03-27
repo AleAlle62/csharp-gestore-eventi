@@ -8,6 +8,6 @@ namespace csharp_gestore_eventi
 {
     public class ProgrammaEventi
     {
-
+        public string Titolo 
     }
 }
