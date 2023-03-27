@@ -9,16 +9,16 @@ namespace csharp_gestore_eventi
     public class Evento 
     {
         //attributi 
-        private string _titolo;
-        private DateTime _data;
-        private int _capienzaMassima;
-        private int _numeroPostiPrenotati;
+        public string _titolo;
+        public DateTime _data;
+        public int _capienzaMassima;
+        public int _numeroPostiPrenotati;
 
-        public Evento(string titolo, DateTime data, int CapienzaMassima)
+        public Evento(string titolo, DateTime data, int capienzaMassima)
         {
             Titolo = titolo;
             Data = data;
-            CapienzaMassima = CapienzaMassima;
+            _capienzaMassima = capienzaMassima;
             _numeroPostiPrenotati = 0;
         }
 
@@ -30,7 +30,7 @@ namespace csharp_gestore_eventi
             {
                 //controllo che il titolo non sia vuoto 
                 if (string.IsNullOrEmpty(value))
-                    throw new ArgumentException("Il titolo non può essere vuoto.");
+                    throw new Exception("Il titolo non può essere vuoto.");
                 _titolo = value;
             }
         }
@@ -43,20 +43,20 @@ namespace csharp_gestore_eventi
             {
                 // controllo che la data non sia nel passato
                 if (value < DateTime.Now)
-                    throw new ArgumentException("La data non può essere nel passato.");
+                    throw new Exception("La data non può essere nel passato.");
                 _data = value;
             }
         }
 
         // 3) capienza massima
-        public int CapienzaMassima
+        public int capienzaMassima
         {
             get { return _capienzaMassima; }
             set
             {
                 // controllo che non sia un numero sotto lo 0
                 if (value <= 0)
-                    throw new ArgumentException("La capienza massima deve essere un numero positivo.");
+                    throw new Exception("La capienza massima deve essere un numero positivo.");
                 _capienzaMassima = value;
             }
         }
@@ -77,11 +77,11 @@ namespace csharp_gestore_eventi
         public bool PrenotaPosti(int postiDaPrenotare)
         {
             if (Data < DateTime.Now)
-                throw new InvalidOperationException("L'evento è già passato.");
-            if (_numeroPostiPrenotati >= _capienzaMassima)
-                throw new InvalidOperationException("L'evento ha raggiunto la capienza massima.");
+                throw new Exception("L'evento è già passato.");
+            if (_numeroPostiPrenotati > _capienzaMassima)
+                throw new Exception("L'evento ha raggiunto la capienza massima.");
             if (_numeroPostiPrenotati + postiDaPrenotare > _capienzaMassima)
-                throw new InvalidOperationException("Non ci sono abbastanza posti disponibili per l'evento.");
+                throw new Exception("Non ci sono abbastanza posti disponibili per l'evento.");
             _numeroPostiPrenotati += postiDaPrenotare;
             return true;
         }
@@ -91,11 +91,11 @@ namespace csharp_gestore_eventi
         public bool DisdiciPosti(int postiDaDisdire)
         {
             if (Data < DateTime.Now)
-                throw new InvalidOperationException("L'evento è già passato.");
+                throw new Exception("L'evento è già passato.");
             if (_numeroPostiPrenotati <= 0)
-                throw new InvalidOperationException("Non ci sono posti prenotati per l'evento.");
+                throw new Exception("Non ci sono posti prenotati per l'evento.");
             if (_numeroPostiPrenotati - postiDaDisdire < 0)
-                throw new InvalidOperationException("Non ci sono abbastanza posti prenotati da disdire.");
+                throw new Exception("Non ci sono abbastanza posti prenotati da disdire.");
             _numeroPostiPrenotati -= postiDaDisdire;
             return true;
         }
@@ -106,3 +106,4 @@ namespace csharp_gestore_eventi
         }
     }
 }
+
